@@ -45,7 +45,7 @@
                     <div class="space-x-2">
                         <button id="v2_toggle" class="px-3 py-1 bg-indigo-600 text-white rounded-lg">Show</button>
                     </div>
-                    <div class="text-xl font-mono opacity-0 transition-opacity duration-500" id="v2_msg" >Hello World!!!</div>
+                    <div class="text-xl font-mono opacity-0 transition-opacity duration-300" id="v2_msg" >Hello World!!!</div>
                 </div>
             </div>
             <div class="bg-white mt-4 rounded-lg px-5 py-3" x-data="{ show : false }" >
@@ -57,8 +57,119 @@
                     <div class="text-xl font-mono" x-show="show">Hello World!!!</div>
                 </div>
             </div>
-        </div>
-        
+        </div>     
+    </section>
+    <section>
+        <h2 class="text-xl font-semibold mb-2">3. Event Handling</h2>
+        <p class="text-xs text-gray-500">ดักจับ enter เวลา submit</p>
+        <div class="grid grid-cols-2 gap-6">
+            <div class="bg-white mt-4 rounded-lg px-5 py-3">
+                <h3 class="text-lg font-semibold">VanillaJS</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="v3_input" class="block text-sm my-2">เพิ่มรายการ</label>
+                        <input id="v3_input" type="text" class="border rounded-lg px-2 py-1 w-5/6" placeholder="เพิ่มข้อมูลโดยกด enter">
+                        <ul id="v3_list" class="list-disc ml-5 mt-2"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white mt-4 rounded-lg px-5 py-3" x-data="{item:'', itemList:[]}" >
+                <h3 class="text-lg font-semibold ">AlpineJS</h3>
+                    <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm my-2">เพิ่มรายการ</label>
+                        <input x-model="item" type="text" @keyup.enter="if(item.trim()){ itemList.push(item.trim()); item=''; }" class="border rounded-lg px-2 py-1 w-5/6" placeholder="เพิ่มข้อมูลโดยกด enter">
+                        <ul class="list-disc ml-5 mt-2">
+                            <template x-for="(it, idx) in itemList" :key="idx">
+                                <li x-text="idx+'. '+ it"></li>
+                            </template>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>     
+    </section>
+    <section>
+        <h2 class="text-xl font-semibold mb-2">4. binding mod</h2>
+        <p class="text-xs text-gray-500">แปลงตัวเลข หน่วงเวลา อัพเดต</p>
+        <div class="grid grid-cols-2 gap-6">
+            <div class="bg-white mt-4 rounded-lg px-5 py-3">
+                <h3 class="text-lg font-semibold">VanillaJS</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="v4_price" class="block text-sm my-2">ราคาสินค้า</label>
+                        <input id="v4_price" type="text" class="border rounded-lg px-2 py-1 w-5/6" placeholder="กรอกราคา">
+                        <label for="v4_tax" class="block text-sm my-2">กรอกภาษีมูลค่าเพิ่ม (%)</label>
+                        <input id="v4_tax" type="text" class="border rounded-lg px-2 py-1 w-5/6" placeholder="กรอกค่าภาษี">
+                        <div id="v4_total" class="mt-2 text-md text-slate-800">รวมสุทธิ : -</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white mt-4 rounded-lg px-5 py-3" x-data="{price:0, tax:7, total:0}" x-effect="total = (price||0) + ((price*(tax||0))/100)">
+                <h3 class="text-lg font-semibold ">AlpineJS</h3>
+                    <div class="space-y-4">
+                    <div>
+                        <label for="v4_price" class="block text-sm my-2">ราคาสินค้า</label>
+                        <input x-model.number="price"  class="border rounded-lg px-2 py-1 w-5/6" placeholder="กรอกราคา">
+                        <label for="v4_tax" class="block text-sm my-2">กรอกภาษีมูลค่าเพิ่ม (%)</label>
+                        <input x-model.number="tax"  class="border rounded-lg px-2 py-1 w-5/6" placeholder="กรอกค่าภาษี">
+                        <div class="mt-2 text-md text-slate-800">รวมสุทธิ : <span x-text="total.toFixed(2)"></span> </div>
+                    </div>
+                </div>
+            </div>
+        </div>     
+    </section>
+    <section>
+        <h2 class="text-xl font-semibold mb-2">5. Loop and Filter (ค้นหา) </h2>
+        <p class="text-xs text-gray-500">กรองด้วย wording or character ค้นหาข้อมูลที่ดึงมาแล้ว ไม่ต้องดึงข้อมูลใหม่</p>
+        <div class="grid grid-cols-2 gap-6">
+            <div class="bg-white mt-4 rounded-lg px-5 py-3">
+                <h3 class="text-lg font-semibold">VanillaJS</h3>
+                <div class="flex gap-2 mb-3">
+                    <input type="text" id="v5_search" class="border rounded-lg px-2 py-1 flex-1" placeholder="กรอกข้อมูลค้นหา">
+                    <select id="v5_role" class="border rounded px-2 py-1">
+                        <option value="">--ทุกตำแหน่ง--</option>
+                        <option value="Data Analyst">Data Analyst</option>
+                        <option value="Data Engineer">Data Engineer</option>
+                    </select>
+                </div>
+                <p id="v5_count" class="text-sm text-gray-500 my-2"></p>
+                <ul id="v5_list" class="list-disc ml-5 mt-2"></ul>
+            </div>
+            <div class="bg-white mt-4 rounded-lg px-5 py-3" 
+                x-data="{search: '',
+                        role: '',
+                        employee : [
+                            {name : 'Alice', age: 22, role: 'Data Analyst'},
+                            {name : 'Singha', age: 25, role: 'Data Engineer'},
+                            {name : 'Leo', age: 28, role: 'Data Analyst'},
+                            {name : 'Chang', age: 27, role: 'Data Engineer'},
+                            {name : 'Heineken', age: 24, role: 'Data Engineer'},
+                        ],
+                        get filtered(){
+                            return this.employee.filter(x => x.name.toLowerCase().includes(this.search.toLowerCase()) &&
+                            (this.role ==='' || this.role === x.role));
+                        }
+                
+                }" x-effect="total = (price||0) + ((price*(tax||0))/100)">
+                <h3 class="text-lg font-semibold ">AlpineJS</h3>
+                   <div class="flex gap-2 mb-3">
+                        <input x-model="search" class="border rounded-lg px-2 py-1 flex-1" placeholder="กรอกข้อมูลค้นหา">
+                        <select x-model="role" class="border rounded px-2 py-1">
+                            <option value="">--ทุกตำแหน่ง--</option>
+                            <option value="Data Analyst">Data Analyst</option>
+                            <option value="Data Engineer">Data Engineer</option>
+                        </select>
+                    </div>
+                    <p x-text="'found : ' + filtered.length" class="text-sm text-gray-500 my-2"></p>
+                    <ul class="list-disc ml-5 mt-2">
+                        <template x-for="p in filtered" :key="p.name" >
+                            <li class="text-sm" x-text="`${p.name} (${p.age}) - ${p.role}`"></li>
+                        </template>
+                    </ul>
+            </div>
+        </div>     
     </section>
 </div>
 <script>
@@ -89,6 +200,58 @@
         })
 
 
+        //3
+        const v3Input = document.getElementById('v3_input');
+        const v3List = document.getElementById('v3_list');
+        v3Input.addEventListener('keyup', (e) => {
+            if(e.key === "Enter"){
+                const val = v3Input.value.trim();
+                if(val) {
+                    const li = document.createElement('li');
+                    li.textContent = val;
+                    v3List.appendChild(li);
+                    v3Input.value = '';
+                }
+            }
+        })
+
+        //4
+        const v4Price = document.getElementById('v4_price');
+        const v4Tax = document.getElementById('v4_tax');
+        const v4Total = document.getElementById('v4_total');
+
+        function totalCal() {
+            const price_parse = parseFloat(v4Price.value) || 0;
+            const tax_parse = parseFloat(v4Tax.value) || 0;
+            v4Total.textContent = `รวมสุทธิ : ${(price_parse + ((price_parse*tax_parse)/100)).toFixed(2)}`;
+        }
+        v4Price.addEventListener('input', totalCal);
+
+        //5
+
+        const v5Data = [
+            {name : 'Alice', age: 22, role: 'Data Analyst'},
+            {name : 'Singha', age: 25, role: 'Data Engineer'},
+            {name : 'Leo', age: 28, role: 'Data Analyst'},
+            {name : 'Chang', age: 27, role: 'Data Engineer'},
+            {name : 'Heineken', age: 24, role: 'Data Engineer'},
+        ];
+        const search = document.getElementById('v5_search');
+        const role = document.getElementById('v5_role');
+
+        function renderList() {
+            const word_search = search.value.toLowerCase();
+            // console.log(search.value);
+            selected_role = role.value;
+            const filtered = v5Data.filter(x => x.name.toLowerCase().includes(word_search.toString()) && (selected_role.toString() === '' || x.role === selected_role.toString()));
+            // console.log(filtered)
+            document.getElementById('v5_count').textContent = `found : ${filtered.length}`;
+            document.getElementById('v5_list').innerHTML = filtered.map(x => `<li class ="text-sm">${x.name} (${x.age}) - ${x.role}</li>`).join('');
+        }
+
+        search.addEventListener('input', renderList);
+        role.addEventListener('change', renderList);
+        renderList();
     })
 </script>
 {% endblock%}
