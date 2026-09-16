@@ -171,6 +171,136 @@
             </div>
         </div>     
     </section>
+    <section>
+        <h2 class="text-xl font-semibold mb-2">6. Form Validation (ตรวจสอบอีเมลและรหัสผ่าน)</h2>
+        <p class="text-xs text-gray-500">ตรวจสอบความถูกต้องของอีเมล และรหัสผ่าน (8 ตัวขึ้นไป, ตัวพิมพ์เล็ก, ตัวพิมพ์ใหญ่, ตัวเลข, เครื่องหมายพิเศษ)</p>
+        <div class="grid grid-cols-2 gap-6">
+            <!-- VanillaJS Column -->
+            <div class="bg-white mt-4 rounded-lg px-5 py-3">
+                <h3 class="text-lg font-semibold mb-3">VanillaJS</h3>
+                <form id="v6_form" class="space-y-4" onsubmit="event.preventDefault();">
+                    <div>
+                        <label for="v6_email" class="block text-sm font-medium text-gray-700 mb-1">อีเมล</label>
+                        <input id="v6_email" type="email" class="border border-gray-300 rounded-lg px-3 py-1.5 w-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="example@email.com">
+                        <p id="v6_email_msg" class="text-xs mt-1 text-gray-400">กรุณากรอกรูปแบบอีเมลให้ถูกต้อง</p>
+                    </div>
+                    <div>
+                        <label for="v6_password" class="block text-sm font-medium text-gray-700 mb-1">รหัสผ่าน</label>
+                        <input id="v6_password" type="password" class="border border-gray-300 rounded-lg px-3 py-1.5 w-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="กรอกรหัสผ่าน">
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-100 space-y-1.5 text-xs">
+                        <p class="font-medium text-gray-600 mb-1">เงื่อนไขรหัสผ่าน:</p>
+                        <div id="v6_rule_len" class="flex items-center gap-1.5 text-gray-400">
+                            <span class="icon">✕</span> <span>ความยาว 8 ตัวอักษรขึ้นไป</span>
+                        </div>
+                        <div id="v6_rule_lower" class="flex items-center gap-1.5 text-gray-400">
+                            <span class="icon">✕</span> <span>มีตัวพิมพ์เล็ก (a-z)</span>
+                        </div>
+                        <div id="v6_rule_upper" class="flex items-center gap-1.5 text-gray-400">
+                            <span class="icon">✕</span> <span>มีตัวพิมพ์ใหญ่ (A-Z)</span>
+                        </div>
+                        <div id="v6_rule_num" class="flex items-center gap-1.5 text-gray-400">
+                            <span class="icon">✕</span> <span>มีตัวเลข (0-9)</span>
+                        </div>
+                        <div id="v6_rule_special" class="flex items-center gap-1.5 text-gray-400">
+                            <span class="icon">✕</span> <span>มีเครื่องหมายพิเศษ (!@#$%^&*...)</span>
+                        </div>
+                    </div>
+                    <button id="v6_submit" type="submit" disabled class="w-full py-2 px-4 rounded-lg text-sm font-medium transition bg-gray-300 text-gray-500 cursor-not-allowed">
+                        สมัครสมาชิก / บันทึกข้อมูล
+                    </button>
+                    <div id="v6_success_alert" class="hidden text-xs text-green-700 bg-green-100 p-2.5 rounded-lg border border-green-200 text-center font-medium">
+                        ✓ ข้อมูลถูกต้องครบถ้วน พร้อมส่งข้อมูล!
+                    </div>
+                </form>
+            </div>
+
+            <!-- AlpineJS Column -->
+            <div class="bg-white mt-4 rounded-lg px-5 py-3" 
+                x-data="{
+                    email: '',
+                    password: '',
+                    submitted: false,
+                    get isEmailValid() {
+                        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
+                    },
+                    get hasLen() {
+                        return this.password.length >= 8;
+                    },
+                    get hasLower() {
+                        return /[a-z]/.test(this.password);
+                    },
+                    get hasUpper() {
+                        return /[A-Z]/.test(this.password);
+                    },
+                    get hasNum() {
+                        return /[0-9]/.test(this.password);
+                    },
+                    get hasSpecial() {
+                        return /[^A-Za-z0-9]/.test(this.password);
+                    },
+                    get isPasswordValid() {
+                        return this.hasLen && this.hasLower && this.hasUpper && this.hasNum && this.hasSpecial;
+                    },
+                    get isFormValid() {
+                        return this.isEmailValid && this.isPasswordValid;
+                    },
+                    handleSubmit() {
+                        if (this.isFormValid) {
+                            this.submitted = true;
+                            setTimeout(() => { this.submitted = false; }, 3000);
+                        }
+                    }
+                }">
+                <h3 class="text-lg font-semibold mb-3">AlpineJS</h3>
+                <form class="space-y-4" @submit.prevent="handleSubmit">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">อีเมล</label>
+                        <input x-model="email" type="email" 
+                            class="border border-gray-300 rounded-lg px-3 py-1.5 w-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                            placeholder="example@email.com">
+                        <p class="text-xs mt-1" 
+                           :class="email === '' ? 'text-gray-400' : (isEmailValid ? 'text-green-600 font-medium' : 'text-red-500')"
+                           x-text="email === '' ? 'กรุณากรอกรูปแบบอีเมลให้ถูกต้อง' : (isEmailValid ? '✓ รูปแบบอีเมลถูกต้อง' : '✕ รูปแบบอีเมลไม่ถูกต้อง')">
+                        </p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">รหัสผ่าน</label>
+                        <input x-model="password" type="password" 
+                            class="border border-gray-300 rounded-lg px-3 py-1.5 w-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                            placeholder="กรอกรหัสผ่าน">
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-100 space-y-1.5 text-xs">
+                        <p class="font-medium text-gray-600 mb-1">เงื่อนไขรหัสผ่าน:</p>
+                        <div class="flex items-center gap-1.5" :class="hasLen ? 'text-green-600 font-medium' : 'text-gray-400'">
+                            <span x-text="hasLen ? '✓' : '✕'"></span> <span>ความยาว 8 ตัวอักษรขึ้นไป</span>
+                        </div>
+                        <div class="flex items-center gap-1.5" :class="hasLower ? 'text-green-600 font-medium' : 'text-gray-400'">
+                            <span x-text="hasLower ? '✓' : '✕'"></span> <span>มีตัวพิมพ์เล็ก (a-z)</span>
+                        </div>
+                        <div class="flex items-center gap-1.5" :class="hasUpper ? 'text-green-600 font-medium' : 'text-gray-400'">
+                            <span x-text="hasUpper ? '✓' : '✕'"></span> <span>มีตัวพิมพ์ใหญ่ (A-Z)</span>
+                        </div>
+                        <div class="flex items-center gap-1.5" :class="hasNum ? 'text-green-600 font-medium' : 'text-gray-400'">
+                            <span x-text="hasNum ? '✓' : '✕'"></span> <span>มีตัวเลข (0-9)</span>
+                        </div>
+                        <div class="flex items-center gap-1.5" :class="hasSpecial ? 'text-green-600 font-medium' : 'text-gray-400'">
+                            <span x-text="hasSpecial ? '✓' : '✕'"></span> <span>มีเครื่องหมายพิเศษ (!@#$%^&*...)</span>
+                        </div>
+                    </div>
+                    <button type="submit" 
+                        :disabled="!isFormValid" 
+                        class="w-full py-2 px-4 rounded-lg text-sm font-medium transition"
+                        :class="isFormValid ? 'bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer shadow-sm' : 'bg-gray-300 text-gray-500 cursor-not-allowed'">
+                        สมัครสมาชิก / บันทึกข้อมูล
+                    </button>
+                    <div x-show="submitted" x-transition class="text-xs text-green-700 bg-green-100 p-2.5 rounded-lg border border-green-200 text-center font-medium">
+                        ✓ ข้อมูลถูกต้องครบถ้วน พร้อมส่งข้อมูล!
+                    </div>
+                </form>
+            </div>
+        </div>     
+    </section>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -252,6 +382,85 @@
         search.addEventListener('input', renderList);
         role.addEventListener('change', renderList);
         renderList();
+
+        //6 Form Validation (Email & Password)
+        const v6Email = document.getElementById('v6_email');
+        const v6EmailMsg = document.getElementById('v6_email_msg');
+        const v6Password = document.getElementById('v6_password');
+        const v6RuleLen = document.getElementById('v6_rule_len');
+        const v6RuleLower = document.getElementById('v6_rule_lower');
+        const v6RuleUpper = document.getElementById('v6_rule_upper');
+        const v6RuleNum = document.getElementById('v6_rule_num');
+        const v6RuleSpecial = document.getElementById('v6_rule_special');
+        const v6Submit = document.getElementById('v6_submit');
+        const v6Form = document.getElementById('v6_form');
+        const v6SuccessAlert = document.getElementById('v6_success_alert');
+
+        function updateRuleItem(element, isValid) {
+            const iconSpan = element.querySelector('.icon');
+            if (isValid) {
+                element.className = 'flex items-center gap-1.5 text-green-600 font-medium';
+                if (iconSpan) iconSpan.textContent = '✓';
+            } else {
+                element.className = 'flex items-center gap-1.5 text-gray-400';
+                if (iconSpan) iconSpan.textContent = '✕';
+            }
+        }
+
+        function validateV6() {
+            const emailVal = v6Email.value.trim();
+            const passwordVal = v6Password.value;
+
+            // Email check
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const isEmailValid = emailPattern.test(emailVal);
+
+            if (emailVal === '') {
+                v6EmailMsg.textContent = 'กรุณากรอกรูปแบบอีเมลให้ถูกต้อง';
+                v6EmailMsg.className = 'text-xs mt-1 text-gray-400';
+            } else if (isEmailValid) {
+                v6EmailMsg.textContent = '✓ รูปแบบอีเมลถูกต้อง';
+                v6EmailMsg.className = 'text-xs mt-1 text-green-600 font-medium';
+            } else {
+                v6EmailMsg.textContent = '✕ รูปแบบอีเมลไม่ถูกต้อง';
+                v6EmailMsg.className = 'text-xs mt-1 text-red-500';
+            }
+
+            // Password rules
+            const hasLen = passwordVal.length >= 8;
+            const hasLower = /[a-z]/.test(passwordVal);
+            const hasUpper = /[A-Z]/.test(passwordVal);
+            const hasNum = /[0-9]/.test(passwordVal);
+            const hasSpecial = /[^A-Za-z0-9]/.test(passwordVal);
+
+            updateRuleItem(v6RuleLen, hasLen);
+            updateRuleItem(v6RuleLower, hasLower);
+            updateRuleItem(v6RuleUpper, hasUpper);
+            updateRuleItem(v6RuleNum, hasNum);
+            updateRuleItem(v6RuleSpecial, hasSpecial);
+
+            const isPasswordValid = hasLen && hasLower && hasUpper && hasNum && hasSpecial;
+            const isFormValid = isEmailValid && isPasswordValid;
+
+            if (isFormValid) {
+                v6Submit.disabled = false;
+                v6Submit.className = 'w-full py-2 px-4 rounded-lg text-sm font-medium transition bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer shadow-sm';
+            } else {
+                v6Submit.disabled = true;
+                v6Submit.className = 'w-full py-2 px-4 rounded-lg text-sm font-medium transition bg-gray-300 text-gray-500 cursor-not-allowed';
+            }
+        }
+
+        v6Email.addEventListener('input', validateV6);
+        v6Password.addEventListener('input', validateV6);
+
+        v6Form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            v6SuccessAlert.classList.remove('hidden');
+            setTimeout(() => {
+                v6SuccessAlert.classList.add('hidden');
+            }, 3000);
+        });
     })
 </script>
 {% endblock%}
